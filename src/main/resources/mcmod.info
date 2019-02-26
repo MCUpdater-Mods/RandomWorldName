@@ -1,0 +1,16 @@
+[
+{
+  "modid": "randomworldname",
+  "name": "Random World Name",
+  "description": "Generates a random default world name when creating a new world",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["smbarbour"],
+  "credits": "darkosto for requesting this mod on stream",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
