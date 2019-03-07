@@ -1,14 +1,18 @@
 package org.mcupdater.randomworldname;
 
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ModMetadata;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.Level;
+import org.mcupdater.randomworldname.compat.topography.TopographyWorldCreationEventHandler;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -38,10 +42,18 @@ public class RandomWorldName {
                 config.save();
             }
         }
-        MinecraftForge.EVENT_BUS.register(new WorldCreationEventHander());
         MinecraftForge.EVENT_BUS.register(this);
     }
 
+    @Mod.EventHandler
+    public void postInit(FMLPostInitializationEvent event) {
+        if (Loader.isModLoaded("topography")) {
+            MinecraftForge.EVENT_BUS.register(new TopographyWorldCreationEventHandler());
+        } else {
+            MinecraftForge.EVENT_BUS.register(new WorldCreationEventHander());
+        }
+
+    }
     @SubscribeEvent
     public void onConfigChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event)
     {
