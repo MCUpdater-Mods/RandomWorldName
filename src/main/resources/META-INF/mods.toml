@@ -1,0 +1,11 @@
+modLoader="javafml"
+loaderVersion="[32,)"
+license="Apache License 2.0"
+[[mods]]
+modId="randomworldname"
+version="${file.jarVersion}"
+displayName="Random World Name"
+authors="smbarbour"
+description='''
+Generates a random default world name when creating a new world
+'''
