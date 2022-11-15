@@ -17,6 +17,10 @@ public class Config {
 
     public static ForgeConfigSpec CLIENT_CONFIG;
 
+    public static final ForgeConfigSpec.ConfigValue<String> SEPARATOR;
+
+    public static final ForgeConfigSpec.BooleanValue ORDER;
+
     static {
         ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
 
@@ -95,9 +99,11 @@ public class Config {
                 "Gold",
                 "Diamond"
         ), (Object o) -> true);
+        SEPARATOR = CLIENT_BUILDER.comment("Separator between places and adjectives").define("separator", " of ");
+        ORDER = CLIENT_BUILDER.comment("<Place> before <Adjective>").define("order",true);
         CLIENT_BUILDER.pop();
 
-        CLIENT_BUILDER.comment("Name Lists").push(CATEGORY_PLACEMENT);
+        CLIENT_BUILDER.comment("Button Position").push(CATEGORY_PLACEMENT);
         X = CLIENT_BUILDER.comment("X Coordinate for the button").defineInRange("x",110,0,Integer.MAX_VALUE);
         Y = CLIENT_BUILDER.comment("Y Coordinate for the button").defineInRange("y",60,0,Integer.MAX_VALUE);
         CLIENT_BUILDER.pop();

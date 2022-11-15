@@ -27,8 +27,13 @@ public class RandomWorldName {
 
     private void injectButton(ScreenEvent.InitScreenEvent evt) {
         if (evt.getScreen() instanceof CreateWorldScreen) {
-            ((CreateWorldScreen) evt.getScreen()).addRenderableWidget(new Button(evt.getScreen().width / 2 + Config.X.get(), Config.Y.get(), 100, 20, new TranslatableComponent("Generate Name"), buttonPress -> {
-                String name = getRandomEntry(Config.PLACES.get()) + " of " + getRandomEntry(Config.ADJECTIVES.get());
+            ((CreateWorldScreen) evt.getScreen()).addRenderableWidget(new Button(evt.getScreen().width / 2 + Config.X.get(), Config.Y.get(), 100, 20, new TranslatableComponent("button.randomworldname.generate"), buttonPress -> {
+                String name;
+                if (Config.ORDER.get()) {
+                    name = getRandomEntry(Config.PLACES.get()) + Config.SEPARATOR.get() + getRandomEntry(Config.ADJECTIVES.get());
+                } else {
+                    name = getRandomEntry(Config.ADJECTIVES.get()) + Config.SEPARATOR.get() + getRandomEntry(Config.PLACES.get());
+                }
                 CreateWorldScreen screen = (CreateWorldScreen) evt.getScreen();
                 screen.nameEdit.setValue(name);
             }));
