@@ -3,7 +3,7 @@ package com.mcupdater.randomworldname;
 import com.mcupdater.randomworldname.setup.Config;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -25,9 +25,10 @@ public class RandomWorldName {
         MinecraftForge.EVENT_BUS.addListener(this::injectButton);
     }
 
-    private void injectButton(ScreenEvent.InitScreenEvent evt) {
+    private void injectButton(ScreenEvent.Init evt) {
+        LOGGER.info("Screen Init: " + evt.getScreen().getClass().toString());
         if (evt.getScreen() instanceof CreateWorldScreen) {
-            ((CreateWorldScreen) evt.getScreen()).addRenderableWidget(new Button(evt.getScreen().width / 2 + Config.X.get(), Config.Y.get(), 100, 20, new TranslatableComponent("button.randomworldname.generate"), buttonPress -> {
+            ((CreateWorldScreen) evt.getScreen()).addRenderableWidget(new Button(evt.getScreen().width / 2 + Config.X.get(), Config.Y.get(), 100, 20, Component.translatable("button.randomworldname.generate"), buttonPress -> {
                 String name;
                 if (Config.ORDER.get()) {
                     name = getRandomEntry(Config.PLACES.get()) + Config.SEPARATOR.get() + getRandomEntry(Config.ADJECTIVES.get());
