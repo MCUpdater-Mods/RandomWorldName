@@ -1,16 +1,18 @@
 package com.mcupdater.randomworldname;
 
 import com.mcupdater.randomworldname.setup.Config;
+import com.mojang.logging.LogUtils;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.client.event.ScreenEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.client.event.ScreenEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Random;
@@ -18,26 +20,42 @@ import java.util.Random;
 @Mod(RandomWorldName.MODID)
 public class RandomWorldName {
     public static final String MODID = "randomworldname";
-    public static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
 
-    public RandomWorldName() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_CONFIG);
-        MinecraftForge.EVENT_BUS.addListener(this::injectButton);
+    public RandomWorldName(IEventBus modEventBus, ModContainer modContainer) {
+        modContainer.registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_CONFIG);
+        NeoForge.EVENT_BUS.addListener(this::injectButton);
     }
 
-    private void injectButton(ScreenEvent.Init evt) {
-        LOGGER.info("Screen Init: " + evt.getScreen().getClass().toString());
-        if (evt.getScreen() instanceof CreateWorldScreen) {
-            ((CreateWorldScreen) evt.getScreen()).addRenderableWidget(new Button(evt.getScreen().width / 2 + Config.X.get(), Config.Y.get(), 100, 20, Component.translatable("button.randomworldname.generate"), buttonPress -> {
-                String name;
-                if (Config.ORDER.get()) {
-                    name = getRandomEntry(Config.PLACES.get()) + Config.SEPARATOR.get() + getRandomEntry(Config.ADJECTIVES.get());
-                } else {
-                    name = getRandomEntry(Config.ADJECTIVES.get()) + Config.SEPARATOR.get() + getRandomEntry(Config.PLACES.get());
+    private void injectButton(ScreenEvent.Init.Post evt) {
+        if (evt.getScreen() instanceof CreateWorldScreen cws) {
+            Button generateName = Button.builder(Component.translatable("button.randomworldname.generate"), button -> {
+                cws.tabNavigationBar.tabs.stream().forEach(internalTab -> {
+                    if (internalTab instanceof CreateWorldScreen.GameTab gTab) {
+                        String name;
+                        if (Config.ORDER.get()) {
+                            name = getRandomEntry(Config.PLACES.get()) + Config.SEPARATOR.get() + getRandomEntry(Config.ADJECTIVES.get());
+                        } else {
+                            name = getRandomEntry(Config.ADJECTIVES.get()) + Config.SEPARATOR.get() + getRandomEntry(Config.PLACES.get());
+                        }
+                        gTab.nameEdit.setValue(name);
+                    }
+                });
+            }).size(210, 20).build();
+            cws.tabNavigationBar.tabs.stream().forEach(tab -> {
+                if (tab instanceof CreateWorldScreen.GameTab gameTab) {
+                    gameTab.layout.visitChildren(child -> {
+                        if (child instanceof LinearLayout worldNameLayout) {
+
+                            worldNameLayout.addChild(generateName);
+                        }
+                    });
+                    gameTab.layout.arrangeElements();
                 }
-                CreateWorldScreen screen = (CreateWorldScreen) evt.getScreen();
-                screen.nameEdit.setValue(name);
-            }));
+            });
+            cws.tabNavigationBar.selectTab(1,false);
+            cws.tabNavigationBar.selectTab(0,false);
+            generateName.onPress();
         }
     }
 
