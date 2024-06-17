@@ -2,6 +2,8 @@
 build/
 eclipse/
 run/
+runs/
+repo/
 .gradle/
 .idea/
 
