@@ -1,3 +1,8 @@
 {
-  "button.randomworldname.generate": "Generate Name"
+  "button.randomworldname.generate": "Generate Name",
+  "randomworldname.configuration.separator": "Separator",
+  "randomworldname.configuration.adjectives": "Adjectives",
+  "randomworldname.configuration.order": "Order",
+  "randomworldname.configuration.names": "Name Generation",
+  "randomworldname.configuration.places": "Places"
 }
