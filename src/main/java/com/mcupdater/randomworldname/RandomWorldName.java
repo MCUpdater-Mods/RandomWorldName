@@ -59,7 +59,7 @@ public class RandomWorldName {
             });
             cws.tabNavigationBar.selectTab(1,false);
             cws.tabNavigationBar.selectTab(0,false);
-            generateName.onPress();
+            generateName.onPress(null); //Note: no input modifiers are needed
         }
     }
 
